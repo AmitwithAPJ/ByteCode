@@ -1,21 +1,23 @@
+// app/articles/page.tsx
+
 import {
   AllArticlesPage,
 } from "@/components/articles/all-articles-page";
 import ArticleSearchInput from "@/components/articles/article-search-input";
 import { Button } from "@/components/ui/button";
+import React, { Suspense } from "react";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchArticleByQuery } from "@/lib/query/fetch-articles";
 import Link from "next/link";
-import { Suspense } from "react";
 
 const ITEMS_PER_PAGE = 3;
 
-interface PageProps {
-  searchParams: { search?: string; page?: string };
-}
-
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: { search?: string; page?: string };
+}) {
   const searchText = searchParams?.search || "";
   const currentPage = Number(searchParams?.page) || 1;
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -64,7 +66,11 @@ export default async function Page({ searchParams }: PageProps) {
           ))}
 
           <Link href={`?search=${searchText}&page=${currentPage + 1}`} passHref>
-            <Button variant="ghost" size="sm" disabled={currentPage === totalPages}>
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={currentPage === totalPages}
+            >
               Next →
             </Button>
           </Link>
