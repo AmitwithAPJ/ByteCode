@@ -1,5 +1,5 @@
 import {
-  AllArticlesPage, 
+  AllArticlesPage,
 } from "@/components/articles/all-articles-page";
 import ArticleSearchInput from "@/components/articles/article-search-input";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,8 @@ type SearchPageProps = {
 
 const ITEMS_PER_PAGE = 3; // Number of items per page
 
-const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
+// ✅ Fixed: Use a named function for default export
+export default async function ArticlesPage({ searchParams }: SearchPageProps) {
   const searchText = searchParams.search || "";
   const currentPage = Number(searchParams.page) || 1;
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -23,7 +24,6 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
 
   const { articles, total } = await fetchArticleByQuery(searchText, skip, take);
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
- 
 
   return (
     <div className="min-h-screen bg-background">
@@ -38,11 +38,12 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
             <ArticleSearchInput />
           </Suspense>
         </div>
-        {/* All article page  */}
-        <Suspense fallback={<AllArticlesPageSkeleton/>}>
-        <AllArticlesPage articles={articles} />
+
+        {/* All article page */}
+        <Suspense fallback={<AllArticlesPageSkeleton />}>
+          <AllArticlesPage articles={articles} />
         </Suspense>
-        {/* <AllArticlesPageSkeleton/> */}
+
         {/* Pagination */}
         <div className="mt-12 flex justify-center gap-2">
           {/* Prev Button */}
@@ -89,10 +90,9 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
       </main>
     </div>
   );
-};
+}
 
-export default page;
-
+// Skeleton loading component
 export function AllArticlesPageSkeleton() {
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
