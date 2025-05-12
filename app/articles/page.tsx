@@ -11,13 +11,13 @@ import { Suspense } from "react";
 
 const ITEMS_PER_PAGE = 3;
 
-export default async function Page({
-  searchParams,
-}: {
+interface PageProps {
   searchParams: { search?: string; page?: string };
-}) {
-  const searchText = searchParams.search || "";
-  const currentPage = Number(searchParams.page) || 1;
+}
+
+export default async function Page({ searchParams }: PageProps) {
+  const searchText = searchParams?.search || "";
+  const currentPage = Number(searchParams?.page) || 1;
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
   const take = ITEMS_PER_PAGE;
 
