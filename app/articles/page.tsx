@@ -1,29 +1,21 @@
-"use client";
-
-import React, { Suspense } from "react";
-import { fetchArticleByQuery } from "@/lib/query/fetch-articles";
-import ArticleSearchInput from "@/components/articles/article-search-input";
+import { Suspense } from "react";
 import { AllArticlesPage } from "@/components/articles/all-articles-page";
+import ArticleSearchInput from "@/components/articles/article-search-input";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/ui/card";
+import { fetchArticleByQuery } from "@/lib/query/fetch-articles";
+import Link from "next/link";
 
-type SearchParams = {
-  search?: string;
-  page?: string;
+type SearchPageProps = {
+  searchParams: { search?: string; page?: string };
 };
 
-type PageProps = {
-  searchParams?: SearchParams;
-};
+const ITEMS_PER_PAGE = 3; // Number of items per page
 
-const ITEMS_PER_PAGE = 3;
-
-export default async function Page({ searchParams }: PageProps) {
-  const searchText = typeof searchParams?.search === "string" ? searchParams.search : "";
-  const currentPage =
-    typeof searchParams?.page === "string" ? Number(searchParams.page) || 1 : 1;
+export default async function ArticlesPage({ searchParams }: SearchPageProps) {
+  const searchText = searchParams.search || "";
+  const currentPage = Number(searchParams.page) || 1;
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
   const take = ITEMS_PER_PAGE;
 
@@ -39,63 +31,79 @@ export default async function Page({ searchParams }: PageProps) {
             All Articles
           </h1>
           {/* Search Bar */}
-          <Suspense fallback={<ArticleSearchInput />}>
+          <Suspense>
             <ArticleSearchInput />
           </Suspense>
         </div>
-        {/* Articles List */}
+        {/* All article page  */}
         <Suspense fallback={<AllArticlesPageSkeleton />}>
           <AllArticlesPage articles={articles} />
         </Suspense>
+        
         {/* Pagination */}
-        <div className="mt-12 flex justify-center gap-2 flex-wrap">
+        <div className="mt-12 flex flex-wrap justify-center gap-2">
           {/* Prev Button */}
-          <Link
-            href={`?search=${encodeURIComponent(searchText)}&page=${currentPage - 1}`}
-            passHref
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={currentPage === 1}
+            asChild={currentPage !== 1}
           >
-            <Button variant="ghost" size="sm" disabled={currentPage === 1}>
-              ← Prev
-            </Button>
-          </Link>
+            {currentPage === 1 ? (
+              <span>← Prev</span>
+            ) : (
+              <Link href={`?search=${searchText}&page=${currentPage - 1}`}>
+                ← Prev
+              </Link>
+            )}
+          </Button>
 
           {/* Page Numbers */}
-          {Array.from({ length: totalPages }).map((_, index) => (
-            <Link
-              key={index}
-              href={`?search=${encodeURIComponent(searchText)}&page=${index + 1}`}
-              passHref
-            >
+          {Array.from({ length: totalPages }).map((_, index) => {
+            const pageNum = index + 1;
+            const isCurrentPage = currentPage === pageNum;
+            
+            return (
               <Button
-                variant={currentPage === index + 1 ? "destructive" : "ghost"}
+                key={index}
+                variant={isCurrentPage ? "default" : "outline"}
                 size="sm"
-                disabled={currentPage === index + 1}
+                className={isCurrentPage ? "pointer-events-none" : ""}
+                asChild={!isCurrentPage}
               >
-                {index + 1}
+                {isCurrentPage ? (
+                  <span>{pageNum}</span>
+                ) : (
+                  <Link href={`?search=${searchText}&page=${pageNum}`}>
+                    {pageNum}
+                  </Link>
+                )}
               </Button>
-            </Link>
-          ))}
+            );
+          })}
 
           {/* Next Button */}
-          <Link
-            href={`?search=${encodeURIComponent(searchText)}&page=${currentPage + 1}`}
-            passHref
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={currentPage === totalPages}
+            asChild={currentPage !== totalPages}
           >
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={currentPage === totalPages}
-            >
-              Next →
-            </Button>
-          </Link>
+            {currentPage === totalPages ? (
+              <span>Next →</span>
+            ) : (
+              <Link href={`?search=${searchText}&page=${currentPage + 1}`}>
+                Next →
+              </Link>
+            )}
+          </Button>
         </div>
       </main>
     </div>
   );
 }
 
-function AllArticlesPageSkeleton() {
+export function AllArticlesPageSkeleton() {
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 3 }).map((_, index) => (
@@ -120,11 +128,11 @@ function AllArticlesPageSkeleton() {
                 <Skeleton className="h-8 w-8 rounded-full" />
 
                 {/* Author Name Skeleton */}
-                <Skeleton className="h-4 w-20 rounded-lg " />
+                <Skeleton className="h-4 w-20 rounded-lg" />
               </div>
 
               {/* Date Skeleton */}
-              <Skeleton className="h-4 w-24 rounded-lg " />
+              <Skeleton className="h-4 w-24 rounded-lg" />
             </div>
           </div>
         </Card>
@@ -132,4 +140,3 @@ function AllArticlesPageSkeleton() {
     </div>
   );
 }
-
