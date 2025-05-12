@@ -103,7 +103,8 @@ export default async function ArticlesPage({ searchParams }: SearchPageProps) {
   );
 }
 
-export function AllArticlesPageSkeleton() {
+// Define AllArticlesPageSkeleton as a normal component inside the page file (not as an export).
+function AllArticlesPageSkeleton() {
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 3 }).map((_, index) => (
