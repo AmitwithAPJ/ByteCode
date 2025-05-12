@@ -75,7 +75,7 @@ const Page: React.FC<SearchPageProps> = async ({ searchParams }) => {
 
 export default Page;
 
-export function AllArticlesPageSkeleton() {
+const AllArticlesPageSkeleton = () => {
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 3 }).map((_, index) => (
@@ -108,4 +108,4 @@ export function AllArticlesPageSkeleton() {
       ))}
     </div>
   );
-}
+};
