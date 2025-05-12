@@ -9,15 +9,15 @@ import { fetchArticleByQuery } from "@/lib/query/fetch-articles";
 import Link from "next/link";
 import { Suspense } from "react";
 
-type SearchPageProps = {
-  searchParams: { search?: string; page?: string };
-};
-
 const ITEMS_PER_PAGE = 3;
 
-const Page = async ({ searchParams }: SearchPageProps) => {
-  const searchText = searchParams.search || "";
-  const currentPage = Number(searchParams.page) || 1;
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: { search?: string; page?: string };
+}) {
+  const searchText = searchParams?.search || "";
+  const currentPage = Number(searchParams?.page) || 1;
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
   const take = ITEMS_PER_PAGE;
 
@@ -78,11 +78,8 @@ const Page = async ({ searchParams }: SearchPageProps) => {
       </main>
     </div>
   );
-};
+}
 
-export default Page;
-
-// Skeleton component
 function AllArticlesPageSkeleton() {
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
