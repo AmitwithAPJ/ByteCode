@@ -23,7 +23,6 @@ const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
 
   const { articles, total } = await fetchArticleByQuery(searchText, skip, take);
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
- 
 
   return (
     <div className="min-h-screen bg-background">
