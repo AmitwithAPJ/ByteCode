@@ -1,3 +1,4 @@
+// Import statements remain unchanged
 import {
   AllArticlesPage, 
 } from "@/components/articles/all-articles-page";
@@ -8,13 +9,17 @@ import { fetchArticleByQuery } from "@/lib/query/fetch-articles";
 import Link from "next/link";
 import AllArticlesPageSkeleton from "./AllArticlesPageSkeleton";
 
+// Define the type for SearchPageProps
 type SearchPageProps = {
-  searchParams: { search?: string; page?: string };
+  // Updated 'searchParams' type to allow asynchronous access (Promise<any>)
+  searchParams: Promise<{ search?: string; page?: string }>; // Updated to match the expected type
 };
 
 const ITEMS_PER_PAGE = 3; // Number of items per page
 
-const page: React.FC<SearchPageProps> = async ({ searchParams }) => {
+const page: React.FC<SearchPageProps> = async (props) => {
+  // Await the promise to resolve the searchParams
+  const searchParams = await props.searchParams; // Added 'await' to resolve the promise
   const searchText = searchParams.search || "";
   const currentPage = Number(searchParams.page) || 1;
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
