@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import React, { Suspense } from "react";
 import { fetchArticleByQuery } from "@/lib/query/fetch-articles";
 import Link from "next/link";
-import AllArticlesPageSkeleton from "./AllArticlesPageSkeleton";
+import AllArticlesPageSkeleton from "@/components/articles/all-articles-skeleton";
 
 // Define the type for SearchPageProps
 type SearchPageProps = {
